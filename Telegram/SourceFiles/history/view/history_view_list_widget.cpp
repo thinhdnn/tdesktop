@@ -1586,11 +1586,13 @@ bool ListWidget::isEmpty() const {
 }
 
 bool ListWidget::hasCopyRestriction(HistoryItem *item) const {
-	return false;
+	return _delegate->listCopyRestrictionType(item)
+		!= CopyRestrictionType::None;
 }
 
 bool ListWidget::hasCopyMediaRestriction(not_null<HistoryItem*> item) const {
-	return false;
+	return _delegate->listCopyMediaRestrictionType(item)
+		!= CopyRestrictionType::None;
 }
 
 bool ListWidget::showCopyRestriction(HistoryItem *item) {
@@ -1616,6 +1618,9 @@ bool ListWidget::showCopyMediaRestriction(not_null<HistoryItem*> item) {
 }
 
 bool ListWidget::hasCopyRestrictionForSelected() const {
+	if (hasCopyRestriction()) {
+		return true;
+	}
 	if (_selected.empty()) {
 		if (_selectedTextItem && _selectedTextItem->forbidsForward()) {
 			return true;
