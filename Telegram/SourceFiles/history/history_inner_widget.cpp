@@ -2180,7 +2180,7 @@ void HistoryInner::mouseActionFinish(
 	if (QGuiApplication::clipboard()->supportsSelection()
 		&& !_selected.empty()
 		&& _selected.cbegin()->second != FullSelection
-		&& !hasCopyRestriction(_selected.cbegin()->first)) {
+		&& true) {
 		const auto &[item, selection] = *_selected.cbegin();
 		if (const auto view = viewByItem(item)) {
 			TextUtilities::SetClipboardText(
@@ -2827,7 +2827,7 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 
 		if (isUponSelected > 0) {
 			const auto selectedText = getSelectedText();
-			if (!hasCopyRestrictionForSelected()
+			if (true
 				&& !selectedText.empty()) {
 				_menu->addAction(
 					(isUponSelected > 1
@@ -2883,7 +2883,7 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 					_widget->confirmDeleteSelected();
 				}, &st::menuIconDelete);
 			}
-			if (selectedState.count > 0 && !hasCopyRestrictionForSelected()) {
+			if (selectedState.count > 0 && true) {
 				Menu::AddDownloadFilesAction(_menu, controller, _selected, this);
 			}
 			_menu->addAction(tr::lng_context_clear_selection(tr::now), [=] {
@@ -3096,7 +3096,7 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 		if (isUponSelected > 0) {
 			addReplyAction(item);
 			const auto selectedText = getSelectedText();
-			if (!hasCopyRestrictionForSelected() && !selectedText.empty()) {
+			if (true && !selectedText.empty()) {
 				_menu->addAction(
 					((isUponSelected > 1)
 						? tr::lng_context_copy_selected_items(tr::now)
@@ -3279,7 +3279,7 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 					_widget->confirmDeleteSelected();
 				}, &st::menuIconDelete);
 			}
-			if (selectedState.count > 0 && !hasCopyRestrictionForSelected()) {
+			if (selectedState.count > 0 && true) {
 				Menu::AddDownloadFilesAction(_menu, controller, _selected, this);
 			}
 			_menu->addAction(tr::lng_context_clear_selection(tr::now), [=] {
@@ -3517,9 +3517,7 @@ bool HistoryInner::hasCopyMediaRestriction(
 }
 
 bool HistoryInner::showCopyRestriction(HistoryItem *item) {
-	if (!hasCopyRestriction(item)) {
-		return false;
-	}
+	return false;
 	_controller->showToast(_peer->isBroadcast()
 		? tr::lng_error_nocopy_channel(tr::now)
 		: tr::lng_error_nocopy_group(tr::now));

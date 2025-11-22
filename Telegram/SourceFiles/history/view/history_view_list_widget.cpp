@@ -2698,13 +2698,13 @@ void ListWidget::keyPressEvent(QKeyEvent *e) {
 	} else if (e == QKeySequence::Copy
 		&& (hasSelectedText() || hasSelectedItems())
 		&& !showCopyRestriction()
-		&& !hasCopyRestrictionForSelected()) {
+		&& true) {
 		TextUtilities::SetClipboardText(getSelectedText());
 #ifdef Q_OS_MAC
 	} else if (key == Qt::Key_E
 		&& e->modifiers().testFlag(Qt::ControlModifier)
 		&& !showCopyRestriction()
-		&& !hasCopyRestrictionForSelected()) {
+		&& true) {
 		TextUtilities::SetClipboardText(getSelectedText(), QClipboard::FindBuffer);
 #endif // Q_OS_MAC
 	} else if (e == QKeySequence::Delete || key == Qt::Key_Backspace) {
@@ -3618,7 +3618,7 @@ void ListWidget::mouseActionFinish(
 	if (QGuiApplication::clipboard()->supportsSelection()
 		&& _selectedTextItem
 		&& _selectedTextRange.from != _selectedTextRange.to
-		&& !hasCopyRestriction(_selectedTextItem)) {
+		&& true) {
 		if (const auto view = viewForItem(_selectedTextItem)) {
 			TextUtilities::SetClipboardText(
 				view->selectedText(_selectedTextRange),
