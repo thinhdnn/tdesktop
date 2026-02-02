@@ -119,6 +119,7 @@ constexpr auto kMaxZoomLevel = 7; // x8
 constexpr auto kZoomToScreenLevel = 1024;
 constexpr auto kOverlayLoaderPriority = 2;
 constexpr auto kSeekTimeMs = 5 * crl::time(1000);
+constexpr auto kWheelSeekTimeMs = 30 * crl::time(1000);
 
 // macOS OpenGL renderer fails to render larger texture
 // even though it reports that max texture size is 16384.
@@ -5751,19 +5752,29 @@ void OverlayWidget::handleWheelEvent(not_null<QWheelEvent*> e) {
 	const auto acceptForJump = !_stories
 		&& ((e->source() == Qt::MouseEventNotSynthesized)
 			|| (e->source() == Qt::MouseEventSynthesizedBySystem));
+	const auto canSeekWithWheel = acceptForJump
+		&& _streamed
+		&& (_streamed->instance.info().video.state.duration > 0);
+	const auto ctrlPressed = e->modifiers().testFlag(Qt::ControlModifier);
 	_verticalWheelDelta += e->angleDelta().y();
 	while (qAbs(_verticalWheelDelta) >= step) {
 		if (_verticalWheelDelta < 0) {
 			_verticalWheelDelta += step;
-			if (e->modifiers().testFlag(Qt::ControlModifier)) {
+			if (ctrlPressed) {
 				zoomOut();
+			} else if (canSeekWithWheel) {
+				seekRelativeTime(-kWheelSeekTimeMs);
+				activateControls();
 			} else if (acceptForJump) {
 				moveToNext(1);
 			}
 		} else {
 			_verticalWheelDelta -= step;
-			if (e->modifiers().testFlag(Qt::ControlModifier)) {
+			if (ctrlPressed) {
 				zoomIn();
+			} else if (canSeekWithWheel) {
+				seekRelativeTime(kWheelSeekTimeMs);
+				activateControls();
 			} else if (acceptForJump) {
 				moveToNext(-1);
 			}
